@@ -1,10 +1,17 @@
 import { isBrowser } from "browser-or-node";
 let now: () => number;
-if (isBrowser) {
-    now = window.performance.now;
+if (
+    window?.document !== undefined &&
+    typeof window?.performance?.now === "function"
+) {
+    now = () => window.performance.now();
 } else {
-    const { performance } = require("perf_hooks");
-    now = performance.now;
+    try {
+        const { performance } = require("perf_hooks");
+        now = () => performance.now();
+    } catch (e) {
+        now = () => Date.now();
+    }
 }
 
 /**
