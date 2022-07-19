@@ -1,9 +1,16 @@
+import { isBrowser } from "browser-or-node";
+let now: () => number;
+if (isBrowser) {
+    now = window.performance.now;
+} else {
+    const { performance } = require("perf_hooks");
+    now = performance.now;
+}
+
 /**
  * Measures the passage of time in a way that mimics a physical stopwatch. Inspired by C#'s Stopwatch class.
  */
 export default class Stopwatch {
-    public static now?: () => number;
-
     /** what to subtract from either now() or stopTime to get the elapsed time. Should be equal to the time the stopwatch
      * was last reset PLUS the time in which it was paused. */
     private earlyTime: number = 0;
@@ -28,7 +35,7 @@ export default class Stopwatch {
         if (!this._running) {
             // Add time in paused state to earlyTime
             // so that it's not counted as elapsedTime.
-            this.earlyTime += Stopwatch.now!() - this.stopTime;
+            this.earlyTime += now() - this.stopTime;
             this._running = true;
         }
     };
@@ -36,7 +43,7 @@ export default class Stopwatch {
     /** Stops the stopwatch */
     public readonly stop = () => {
         if (this._running) {
-            this.stopTime = Stopwatch.now!();
+            this.stopTime = now();
             this._running = false;
         }
     };
@@ -47,31 +54,31 @@ export default class Stopwatch {
      */
     public readonly startStop = (): boolean => {
         if (this._running) {
-            this.stopTime = Stopwatch.now!();
+            this.stopTime = now();
             return (this._running = false);
         } else {
-            this.earlyTime += Stopwatch.now!() - this.stopTime;
+            this.earlyTime += now() - this.stopTime;
             return (this._running = true);
         }
     };
 
     /** Stops the stopwatch and resets the elapsed time. */
     public readonly reset = () => {
-        this.earlyTime = Stopwatch.now!();
+        this.earlyTime = now();
         this.stopTime = this.earlyTime;
         this._running = false;
     };
 
     /** Resets and then starts the stopwatch. */
     public readonly restart = () => {
-        this.earlyTime = Stopwatch.now!();
+        this.earlyTime = now();
         this._running = true;
     };
 
     /** How long the stopwatch has been running. */
     public get elapsedTimeInMilliseconds() {
         if (this._running) {
-            return Stopwatch.now!() - this.earlyTime;
+            return now() - this.earlyTime;
         } else {
             return this.stopTime - this.earlyTime;
         }

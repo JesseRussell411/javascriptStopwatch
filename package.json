@@ -8,5 +8,10 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "browser-or-node": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/npm": "^7.19.0"
+  }
 }
