@@ -11,6 +11,7 @@ try {
         now = () => performance.now();
     }
 } catch (e) {
+    console.error(e);
     now = () => Date.now();
 }
 
