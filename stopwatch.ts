@@ -1,19 +1,4 @@
-let now: () => number;
-if (
-    typeof window !== "undefined" &&
-    window?.document !== undefined &&
-    typeof window?.performance?.now === "function"
-) {
-    now = () => window?.performance?.now();
-} else {
-    try {
-        const { performance } = require("perf_hooks");
-        now = () => performance.now();
-    } catch (e) {
-        console.error(e);
-        now = () => Date.now();
-    }
-}
+import now from "./now";
 
 /**
  * Measures the passage of time in a way that mimics a physical stopwatch. Inspired by C#'s Stopwatch class.
