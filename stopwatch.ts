@@ -1,18 +1,18 @@
 let now: () => number;
-try {
-    if (
-        typeof window !== "undefined" &&
-        window?.document !== undefined &&
-        typeof window?.performance?.now === "function"
-    ) {
-        now = () => window?.performance?.now();
-    } else {
+if (
+    typeof window !== "undefined" &&
+    window?.document !== undefined &&
+    typeof window?.performance?.now === "function"
+) {
+    now = () => window?.performance?.now();
+} else {
+    try {
         const { performance } = require("perf_hooks");
         now = () => performance.now();
+    } catch (e) {
+        console.error(e);
+        now = () => Date.now();
     }
-} catch (e) {
-    console.error(e);
-    now = () => Date.now();
 }
 
 /**
